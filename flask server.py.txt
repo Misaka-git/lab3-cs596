@@ -1,0 +1,57 @@
+from flask import Flask, request
+from datetime import datetime
+
+app = Flask(__name__)
+
+# Store history in memory (list of dictionaries)
+history = []
+
+@app.route("/update")
+def update():
+    temp = request.args.get("temp")
+    hum = request.args.get("hum")
+
+    if temp and hum:
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = {
+            "temperature": temp,
+            "humidity": hum,
+            "timestamp": now
+        }
+        history.insert(0, entry)  # Add to the beginning (latest first)
+        print(f"[{now}] ✅ Temp={temp}°C, Humidity={hum}%")
+        return "✅ Data received", 200
+
+    return "❌ Missing data", 400
+
+@app.route("/")
+@app.route("/history")
+def show_history():
+    html = """
+    <html>
+    <head>
+        <meta http-equiv='refresh' content='5'>
+        <title>Sensor History</title>
+        <style>
+            table { border-collapse: collapse; width: 50%; }
+            th, td { border: 1px solid #aaa; padding: 8px; text-align: center; }
+            th { background-color: #f2f2f2; }
+        </style>
+    </head>
+    <body>
+        <h2>📈 Sensor History (Latest on Top)</h2>
+        <table>
+            <tr><th>Timestamp</th><th>Temperature (°C)</th><th>Humidity (%)</th></tr>
+    """
+    for entry in history[:20]:  # show latest 20 entries
+        html += f"<tr><td>{entry['timestamp']}</td><td>{entry['temperature']}</td><td>{entry['humidity']}</td></tr>"
+
+    html += """
+        </table>
+    </body>
+    </html>
+    """
+    return html
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
