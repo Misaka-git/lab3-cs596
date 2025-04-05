@@ -46,7 +46,7 @@ http://:http://18.222.23.244/5000/
 ---
 
 ## 📹 Demo Video
-[![Watch the demo](https://img.youtube.com/vi/VIDEO_ID_HERE/0.jpg)](https://youtu.be/tUtSn-eP9rw)
+[![Watch the demo](https://youtu.be/tUtSn-eP9rw)]
 
 \
 
